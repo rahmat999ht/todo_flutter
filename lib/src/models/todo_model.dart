@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class TodoModel {
@@ -31,4 +32,16 @@ class TodoModel {
   String toJson() => json.encode(toMap());
 
   factory TodoModel.fromJson(String source) => TodoModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  TodoModel copyWith({
+    bool? isActive,
+    String? title,
+    String? description,
+  }) {
+    return TodoModel(
+      isActive: isActive ?? this.isActive,
+      title: title ?? this.title,
+      description: description ?? this.description,
+    );
+  }
 }

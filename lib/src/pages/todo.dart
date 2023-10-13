@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_flutter/src/models/todo_model.dart';
 
-import '../widgets/todo_widget.dart';
+import '../models/todo_model.dart';
+import '../widgets/todos_widget.dart';
 
 class Todo extends StatefulWidget {
   const Todo({super.key});
@@ -11,22 +11,14 @@ class Todo extends StatefulWidget {
 }
 
 class _TodoState extends State<Todo> {
-  var onChange = false;
-  // var _character = Done.fone;
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: 9,
-      separatorBuilder: (context, index) => const Divider(),
-      itemBuilder: (context, index) {
-        return TodoWidget(
-          todo: TodoModel(
-            description: "dd",
-            isActive: true,
-            title: "dd",
-          ),
-        );
-      },
+    return TodosWidget(
+      todos: [
+        TodoModel(isActive: true, title: "dasd", description: "description"),
+        TodoModel(isActive: false, title: "dasd", description: "description"),
+        TodoModel(isActive: false, title: "dasd", description: "description"),
+      ],
     );
   }
 }

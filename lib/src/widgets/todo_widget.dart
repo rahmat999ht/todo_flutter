@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_flutter/src/models/todo_model.dart';
+import 'package:todo_flutter/src/pages/update.dart';
 
 class TodoWidget extends StatelessWidget {
   final TodoModel todo;
@@ -50,8 +51,8 @@ class TodoWidget extends StatelessWidget {
             ],
           ),
           SizedBox(
-             height: 32,
-                  // width: 32,
+            height: 32,
+            // width: 32,
             child: Row(
               // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,7 +66,10 @@ class TodoWidget extends StatelessWidget {
                     splashColor: Colors.deepPurple,
                     splashRadius: 24,
                     icon: const Icon(Icons.create_rounded),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const UpdatePage()));
+                    },
                   ),
                 ),
                 const Padding(
@@ -80,7 +84,9 @@ class TodoWidget extends StatelessWidget {
                     color: Colors.redAccent.shade700,
                     splashRadius: 24,
                     splashColor: Colors.redAccent.shade700,
-                    icon: const Icon(Icons.delete, ),
+                    icon: const Icon(
+                      Icons.delete,
+                    ),
                     onPressed: () {},
                   ),
                 ),
