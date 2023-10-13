@@ -18,7 +18,6 @@ class _UpdatePageState extends State<UpdatePage> {
         title: const Text("Todo Update"),
       ),
       body: FormTodoWidget(
-    
         todo: TodoModel(
           isActive: true,
           title: "dasd",

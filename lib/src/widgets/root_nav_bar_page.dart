@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_flutter/src/constants/page_constant.dart';
+import 'package:todo_flutter/src/pages/create.dart';
 
 class RootNavBarPage extends StatefulWidget {
   const RootNavBarPage({super.key});
@@ -29,7 +30,13 @@ class _RootNavBarPageState extends State<RootNavBarPage> {
         child: curentPage.page,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const CreatePage(),
+            ),
+          );
+        },
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
