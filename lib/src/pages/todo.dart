@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../models/todo_model.dart';
 import '../widgets/todos_widget.dart';
 
-class Todo extends StatefulWidget {
-  const Todo({super.key});
+class TodoPage extends StatefulWidget {
+  const TodoPage({super.key});
 
   @override
-  State<Todo> createState() => _TodoState();
+  State<TodoPage> createState() => _TodoPageState();
 }
 
-class _TodoState extends State<Todo> {
+class _TodoPageState extends State<TodoPage> {
   @override
   Widget build(BuildContext context) {
     return TodosWidget(
