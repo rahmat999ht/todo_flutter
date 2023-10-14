@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:todo_flutter/src/models/todo_model.dart';
+import 'package:todo_flutter/src/services/todo_firestore_service.dart';
 
 class FormTodoWidget extends StatefulWidget {
   final TodoModel? todo;
@@ -14,18 +17,57 @@ class FormTodoWidget extends StatefulWidget {
 }
 
 class _FormTodoWidgetState extends State<FormTodoWidget> {
+  var isErrorDescripsion = false;
+  var isErrorTitle = false;
+
   var isDone = false;
   final title = TextEditingController();
-  final description = TextEditingController();
+  final descripsion = TextEditingController();
+
   @override
   void initState() {
-    // TODO: implement initState
-    if (widget.todo != null) {
-      isDone = widget.todo?.isDone ?? false;
-      title.text = widget.todo?.title ?? "";
-      description.text = widget.todo?.descripsion ?? "";
-    }
+    isDone = widget.todo?.isDone ?? false;
+    title.text = widget.todo?.title ?? "";
+    descripsion.text = widget.todo?.descripsion ?? "";
+
     super.initState();
+  }
+
+  onSubmit() async {
+    final data = TodoModel(
+      id: widget.todo?.id ??  "_",
+      isDone: isDone,
+      title: title.text,
+      descripsion: descripsion.text,
+    );
+
+    log(data.toMap().toString());
+
+    final isError = descripsion.text.isEmpty || title.text.isEmpty;
+
+    if (title.text.isEmpty) {
+      isErrorTitle = true;
+    }
+
+    if (descripsion.text.isEmpty) {
+      isErrorDescripsion = true;
+    }
+
+    if (isError) {
+      setState(() {});
+      return;
+    }
+
+    if (widget.todo != null) {
+      await TodoFirestoreService.updateTodo(data).then(
+        (_) => Navigator.pop(context),
+      );
+      return;
+    }
+
+    await TodoFirestoreService.createTodo(data).then(
+      (_) => Navigator.pop(context),
+    );
   }
 
   @override
@@ -34,6 +76,7 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
             controller: title,
@@ -44,11 +87,20 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
               ),
             ),
           ),
+          if (isErrorTitle) ...[
+            const SizedBox(
+              height: 4,
+            ),
+            Text(
+              "Title Tidak Boleh Kosong",
+              style: TextStyle(color: Colors.red.shade700, fontSize: 14),
+            ),
+          ],
           const SizedBox(
             height: 8,
           ),
           TextField(
-            controller: description,
+            controller: descripsion,
             decoration: const InputDecoration(
               labelText: "Desc",
               border: OutlineInputBorder(
@@ -56,6 +108,15 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
               ),
             ),
           ),
+          if (isErrorDescripsion) ...[
+            const SizedBox(
+              height: 4,
+            ),
+            Text(
+              "Descripsion Tidak Boleh Kosong",
+              style: TextStyle(color: Colors.red.shade700, fontSize: 14),
+            ),
+          ],
           const SizedBox(
             height: 8,
           ),
@@ -99,7 +160,7 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
               fixedSize: Size(size.width, 40),
               backgroundColor: Colors.deepPurple,
             ),
-            onPressed: () {},
+            onPressed: onSubmit,
             child: Text(
               widget.todo != null ? "Update" : "Create",
               style: const TextStyle(color: Colors.white),

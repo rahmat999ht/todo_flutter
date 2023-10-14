@@ -3,6 +3,7 @@ import 'package:todo_flutter/src/models/todo_model.dart';
 import 'package:todo_flutter/src/pages/update.dart';
 
 import '../services/todo_firestore_service.dart';
+import '../utils/page_navigation_opacity.dart';
 
 class TodoWidget extends StatelessWidget {
   final TodoModel todo;
@@ -10,6 +11,19 @@ class TodoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    onDelete() {
+      TodoFirestoreService.deleteTodo(todo.id);
+    }
+
+    onUpdate() {
+      PageNavigationOpacity.toPage(
+        context,
+        UpdatePage(
+          todo: todo,
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
       child: Row(
@@ -68,10 +82,7 @@ class TodoWidget extends StatelessWidget {
                     splashColor: Colors.deepPurple,
                     splashRadius: 24,
                     icon: const Icon(Icons.create_rounded),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const UpdatePage()));
-                    },
+                    onPressed: onUpdate,
                   ),
                 ),
                 const Padding(
@@ -82,15 +93,14 @@ class TodoWidget extends StatelessWidget {
                   height: 32,
                   width: 32,
                   child: IconButton(
-                    padding: const EdgeInsets.all(0.0),
-                    color: Colors.redAccent.shade700,
-                    splashRadius: 24,
-                    splashColor: Colors.redAccent.shade700,
-                    icon: const Icon(
-                      Icons.delete,
-                    ),
-                    onPressed: () {},
-                  ),
+                      padding: const EdgeInsets.all(0.0),
+                      color: Colors.red.shade700,
+                      splashRadius: 24,
+                      splashColor: Colors.red.shade700,
+                      icon: const Icon(
+                        Icons.delete,
+                      ),
+                      onPressed: onDelete),
                 ),
               ],
             ),

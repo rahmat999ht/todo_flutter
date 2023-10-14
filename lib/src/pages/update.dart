@@ -3,14 +3,10 @@ import 'package:todo_flutter/src/widgets/form_todo_widget.dart';
 
 import '../models/todo_model.dart';
 
-class UpdatePage extends StatefulWidget {
-  const UpdatePage({super.key});
+class UpdatePage extends StatelessWidget {
+  final TodoModel todo;
+  const UpdatePage({super.key, required this.todo});
 
-  @override
-  State<UpdatePage> createState() => _UpdatePageState();
-}
-
-class _UpdatePageState extends State<UpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,12 +14,7 @@ class _UpdatePageState extends State<UpdatePage> {
         title: const Text("Todo Update"),
       ),
       body: FormTodoWidget(
-        todo: TodoModel(
-          id : "",
-          isDone: true,
-          title: "dasd",
-          descripsion: "description",
-        ),
+        todo: todo
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_flutter/src/constants/page_constant.dart';
 import 'package:todo_flutter/src/pages/create.dart';
 
+import '../utils/page_navigation_opacity.dart';
+
 class RootNavBarPage extends StatefulWidget {
   const RootNavBarPage({super.key});
 
@@ -18,6 +20,10 @@ class _RootNavBarPageState extends State<RootNavBarPage> {
     });
   }
 
+  onCreated() {
+    PageNavigationOpacity.toPage(context, const CreatePage());
+  }
+
   @override
   Widget build(BuildContext context) {
     final curentPage = PageConstant.widgetOptions.elementAt(_selectedIndex);
@@ -30,13 +36,7 @@ class _RootNavBarPageState extends State<RootNavBarPage> {
         child: curentPage.page,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const CreatePage(),
-            ),
-          );
-        },
+        onPressed: onCreated,
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
