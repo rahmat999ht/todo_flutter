@@ -1,47 +1,51 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TodoModel {
-  final bool isActive;
+  final String id;
+  final bool isDone;
   final String title;
-  final String description;
+  final String descripsion;
 
   TodoModel({
-    required this.isActive,
+    required this.id,
+    required this.isDone,
     required this.title,
-    required this.description,
+    required this.descripsion,
   });
-  
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'isActive': isActive,
+      'isDone': isDone,
       'title': title,
-      'description': description,
+      'descripsion': descripsion,
     };
   }
 
-  factory TodoModel.fromMap(Map<String, dynamic> map) {
+  factory TodoModel.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    final data = snapshot.data();
     return TodoModel(
-      isActive: map['isActive'] as bool,
-      title: map['title'] as String,
-      description: map['description'] as String,
+      id: snapshot.id,
+      isDone: data?["isDone"] ?? false,
+      title: data?["title"] ?? "-",
+      descripsion: data?["descripsion"] ?? "-",
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory TodoModel.fromJson(String source) => TodoModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
   TodoModel copyWith({
-    bool? isActive,
+    String? id,
+    bool? isDone,
     String? title,
-    String? description,
+    String? descripsion,
   }) {
     return TodoModel(
-      isActive: isActive ?? this.isActive,
+      id: id ?? this.id,
+      isDone: isDone ?? this.isDone,
       title: title ?? this.title,
-      description: description ?? this.description,
+      descripsion: descripsion ?? this.descripsion,
     );
   }
 }
+
+
+

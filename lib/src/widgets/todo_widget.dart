@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_flutter/src/models/todo_model.dart';
 import 'package:todo_flutter/src/pages/update.dart';
 
+import '../services/todo_firestore_service.dart';
+
 class TodoWidget extends StatelessWidget {
   final TodoModel todo;
   const TodoWidget({super.key, required this.todo});
@@ -17,11 +19,11 @@ class TodoWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Checkbox(
-                value: todo.isActive,
+                value: todo.isDone,
                 onChanged: (v) {
-                  // setState(() {
-                  // isActive = v ?? isActive;
-                  // });
+                  TodoFirestoreService.updateTodo(
+                    todo.copyWith(isDone: v ?? todo.isDone),
+                  );
                 },
               ),
               Padding(
@@ -39,7 +41,7 @@ class TodoWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      todo.description,
+                      todo.descripsion,
                       style: const TextStyle(
                         fontWeight: FontWeight.w200,
                         fontSize: 14,

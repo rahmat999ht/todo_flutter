@@ -14,16 +14,16 @@ class FormTodoWidget extends StatefulWidget {
 }
 
 class _FormTodoWidgetState extends State<FormTodoWidget> {
-  var isActive = false;
+  var isDone = false;
   final title = TextEditingController();
   final description = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
     if (widget.todo != null) {
-      isActive = widget.todo?.isActive ?? false;
+      isDone = widget.todo?.isDone ?? false;
       title.text = widget.todo?.title ?? "";
-      description.text = widget.todo?.description ?? "";
+      description.text = widget.todo?.descripsion ?? "";
     }
     super.initState();
   }
@@ -69,7 +69,7 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
-                  isActive = !isActive;
+                  isDone = !isDone;
                   setState(() {});
                 },
                 child: Padding(
@@ -79,9 +79,9 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
                     children: [
                       const Text("Done"),
                       Checkbox(
-                        value: isActive,
+                        value: isDone,
                         onChanged: (value) {
-                          isActive = value ?? isActive;
+                          isDone = value ?? isDone;
                           setState(() {});
                         },
                       ),

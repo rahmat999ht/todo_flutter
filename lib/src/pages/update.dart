@@ -19,9 +19,10 @@ class _UpdatePageState extends State<UpdatePage> {
       ),
       body: FormTodoWidget(
         todo: TodoModel(
-          isActive: true,
+          id : "",
+          isDone: true,
           title: "dasd",
-          description: "description",
+          descripsion: "description",
         ),
       ),
     );

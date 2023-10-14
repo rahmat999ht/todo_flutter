@@ -12,12 +12,22 @@ class TodosWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: todos.length,
-      separatorBuilder: (context, index) => const Divider(),
-      itemBuilder: (context, index) {
-        return TodoWidget(todo: todos[index]);
-      },
-    );
+    return todos.isEmpty
+        ? const Center(
+            child: Text(
+              "Masih Kosong",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        : ListView.separated(
+            itemCount: todos.length,
+            separatorBuilder: (context, index) => const Divider(),
+            itemBuilder: (context, index) {
+              return TodoWidget(todo: todos[index]);
+            },
+          );
   }
 }
