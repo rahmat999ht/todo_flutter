@@ -14,10 +14,10 @@ class TodoFirestoreService {
           );
 
   static Stream<QuerySnapshot<TodoModel>> getsTodo(String id) =>
-      todos.where("userId", isEqualTo: id).snapshots();
+      todos.where("userId", isEqualTo: id).where("isDone", isEqualTo: false).snapshots();
   static Stream<QuerySnapshot<TodoModel>> getsDone(String id) => todos
-      .where("userId", isEqualTo: id)
       .where("isDone", isEqualTo: true)
+      .where("userId", isEqualTo: id)
       .snapshots();
 
   static Future<DocumentSnapshot<TodoModel>> getTodo(String id) {
