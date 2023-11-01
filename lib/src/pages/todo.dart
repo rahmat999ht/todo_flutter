@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/todos_model.dart';
@@ -13,10 +14,11 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
+  final user = FirebaseAuth.instance.currentUser?..reload();
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: TodoFirestoreService.getsTodo,
+      stream: TodoFirestoreService.getsTodo(user?.email ?? "-"),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final todos = TodosModel.fromListQueryDocumentSnapshot(

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_flutter/src/models/todo_model.dart';
 import 'package:todo_flutter/src/services/todo_firestore_service.dart';
@@ -34,8 +35,10 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
   }
 
   onSubmit() async {
+    final user = FirebaseAuth.instance.currentUser;
     final data = TodoModel(
-      id: widget.todo?.id ??  "_",
+      id: widget.todo?.id ?? "_",
+      userId: user?.email ?? "-",
       isDone: isDone,
       title: title.text,
       descripsion: descripsion.text,

@@ -13,9 +13,12 @@ class TodoFirestoreService {
             toFirestore: (todo, options) => todo.toMap(),
           );
 
-  static Stream<QuerySnapshot<TodoModel>> get getsTodo => todos.snapshots();
-  static Stream<QuerySnapshot<TodoModel>> get getsDone =>
-      todos.where("isDone", isEqualTo: true).snapshots();
+  static Stream<QuerySnapshot<TodoModel>> getsTodo(String id) =>
+      todos.where("userId", isEqualTo: id).snapshots();
+  static Stream<QuerySnapshot<TodoModel>> getsDone(String id) => todos
+      .where("userId", isEqualTo: id)
+      .where("isDone", isEqualTo: true)
+      .snapshots();
 
   static Future<DocumentSnapshot<TodoModel>> getTodo(String id) {
     return todos.doc(id).get();

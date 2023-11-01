@@ -13,6 +13,12 @@ class PageNavigationOpacity<T> extends MaterialPageRoute<T> {
     );
   }
 
+  static toPageReplacement(BuildContext context, Widget widget) {
+    Navigator.of(context).pushReplacement(
+      PageNavigationOpacity(builder: (context) => widget),
+    );
+  }
+
   @override
   Widget buildTransitions(context, animation, secondaryAnimation, child) {
     return FadeTransition(

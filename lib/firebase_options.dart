@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,17 +49,6 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDkYNsycjKM3kzuH7MKXV3ZR18bfgauR8g',
-    appId: '1:1032606244343:web:97cc87e348fb3ef4aae2f2',
-    messagingSenderId: '1032606244343',
-    projectId: 'skripsi-92779',
-    authDomain: 'skripsi-92779.firebaseapp.com',
-    databaseURL: 'https://skripsi-92779-default-rtdb.firebaseio.com',
-    storageBucket: 'skripsi-92779.appspot.com',
-    measurementId: 'G-0P9DM3E3FK',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB4typJ3xYxzUhZ13FprJugTD65lj-qrxY',
     appId: '1:1032606244343:android:33a9d1b36dc004c3aae2f2',
@@ -73,6 +65,7 @@ class DefaultFirebaseOptions {
     projectId: 'skripsi-92779',
     databaseURL: 'https://skripsi-92779-default-rtdb.firebaseio.com',
     storageBucket: 'skripsi-92779.appspot.com',
+    iosClientId: '1032606244343-kd53jfh696cpq7k73aq6t89nl6qv3qb8.apps.googleusercontent.com',
     iosBundleId: 'com.todo.flutter.todoFlutter',
   );
 }

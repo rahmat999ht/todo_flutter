@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todo_flutter/src/constants/page_constant.dart';
 import 'package:todo_flutter/src/pages/create.dart';
+import 'package:todo_flutter/src/pages/login.dart';
 
 import '../utils/page_navigation_opacity.dart';
 
@@ -24,6 +27,19 @@ class _RootNavBarPageState extends State<RootNavBarPage> {
     PageNavigationOpacity.toPage(context, const CreatePage());
   }
 
+  Future signOut(BuildContext context) async {
+    // Trigger the authentication flow
+    final auth = FirebaseAuth.instance;
+
+    await GoogleSignIn().signOut();
+    await auth.signOut().then((_) => PageNavigationOpacity.toPageReplacement(
+          context,
+          const LoginPage(),
+        ));
+
+    return;
+  }
+
   @override
   Widget build(BuildContext context) {
     final curentPage = PageConstant.widgetOptions.elementAt(_selectedIndex);
@@ -31,6 +47,12 @@ class _RootNavBarPageState extends State<RootNavBarPage> {
       appBar: AppBar(
         title: Text(curentPage.title),
         backgroundColor: Colors.deepPurple,
+        actions: [
+          IconButton.filledTonal(
+            onPressed: () => signOut(context),
+            icon: const Icon(Icons.logout),
+          )
+        ],
       ),
       body: Center(
         child: curentPage.page,
