@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_flutter/src/models/todo_model.dart';
 import 'package:todo_flutter/src/services/todo_firestore_service.dart';
 
@@ -20,29 +22,117 @@ class FormTodoWidget extends StatefulWidget {
 class _FormTodoWidgetState extends State<FormTodoWidget> {
   var isErrorDescripsion = false;
   var isErrorTitle = false;
+  var isErrorTime = false;
+  var isErrorDate = false;
 
   var isDone = false;
   final title = TextEditingController();
   final descripsion = TextEditingController();
+  final time = TextEditingController();
+  final date = TextEditingController();
+
+  String dateFormat = 'dd MMMM yyyy';
+  String dateTanggalFormat = 'dd/MM/yyyy';
 
   @override
   void initState() {
     isDone = widget.todo?.isDone ?? false;
     title.text = widget.todo?.title ?? "";
     descripsion.text = widget.todo?.descripsion ?? "";
+    // time.text = widget.todo?.dateTime.toDate().hour.toString() ?? "";
+    // date.text = widget.todo?.dateTime.toDate().day.toString() ?? "";
 
     super.initState();
   }
 
+  Future<String> getTime(
+    BuildContext context,
+  ) async {
+    final data = await selectTime(context, TimeOfDay.now());
+    if (data != null) {
+      final hour = data.hour.toString().padLeft(2, '0');
+      final minute = data.minute.toString().padLeft(2, '0');
+      final formattedTime = "$hour : $minute";
+      return formattedTime;
+    }
+
+    return "";
+  }
+
+  Future<TimeOfDay?> selectTime(
+    BuildContext context,
+    TimeOfDay initialDate,
+  ) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      helpText: "Pilih Waktu",
+      cancelText: "BATAL",
+      confirmText: "OKE",
+      hourLabelText: "Jam",
+      minuteLabelText: "Menit",
+      initialTime: initialDate,
+    );
+    if (picked != null && picked != initialDate) {
+      return picked;
+    }
+    return null;
+  }
+
+  Future<String> getDate(BuildContext context, [bool isTanggal = false]) async {
+    final data = await selectDate(context, DateTime.now());
+    if (data != null) {
+      final dateFormatter = DateFormat(dateFormat, "id_ID");
+      final dateTanggalFormatter = DateFormat(dateTanggalFormat, "id_ID");
+      final formattedDate = isTanggal
+          ? dateTanggalFormatter.format(data)
+          : dateFormatter.format(data);
+      return formattedDate;
+    }
+    return "";
+  }
+
+  static Future<DateTime?> selectDate(
+    BuildContext context,
+    DateTime initialDate,
+  ) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      return picked;
+    }
+    return null;
+  }
+
   onSubmit() async {
+    TimeOfDay jam = TimeOfDay(
+      hour: int.parse(time.text.split(':')[0]),
+      minute: int.parse(time.text.split(':')[1]),
+    );
+
+    DateFormat inputFormat = DateFormat("dd MMMM yyyy", "id_ID");
+    DateTime tanggal = inputFormat.parse(date.text);
+
+    DateTime initDateTime = DateTime(
+      tanggal.year,
+      tanggal.month,
+      tanggal.day,
+      jam.hour,
+      jam.minute,
+    );
+    Timestamp dateTime = Timestamp.fromDate(initDateTime);
+
     final user = FirebaseAuth.instance.currentUser;
     final data = TodoModel(
-      id: widget.todo?.id ?? "_",
-      userId: user?.email ?? "-",
-      isDone: isDone,
-      title: title.text,
-      descripsion: descripsion.text,
-    );
+        id: widget.todo?.id ?? "_",
+        userId: user?.email ?? "-",
+        isDone: isDone,
+        title: title.text,
+        descripsion: descripsion.text,
+        dateTime: dateTime);
 
     log(data.toMap().toString());
 
@@ -81,47 +171,31 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
+          formField(
+            title: 'Title',
             controller: title,
-            decoration: const InputDecoration(
-              labelText: "Title",
-              border: OutlineInputBorder(
-                borderSide: BorderSide(),
-              ),
-            ),
+            isError: isErrorTitle,
           ),
-          if (isErrorTitle) ...[
-            const SizedBox(
-              height: 4,
-            ),
-            Text(
-              "Title Tidak Boleh Kosong",
-              style: TextStyle(color: Colors.red.shade700, fontSize: 14),
-            ),
-          ],
-          const SizedBox(
-            height: 8,
-          ),
-          TextField(
+          formField(
+            title: 'Desc',
             controller: descripsion,
-            decoration: const InputDecoration(
-              labelText: "Desc",
-              border: OutlineInputBorder(
-                borderSide: BorderSide(),
-              ),
-            ),
+            isError: isErrorDescripsion,
           ),
-          if (isErrorDescripsion) ...[
-            const SizedBox(
-              height: 4,
-            ),
-            Text(
-              "Descripsion Tidak Boleh Kosong",
-              style: TextStyle(color: Colors.red.shade700, fontSize: 14),
-            ),
-          ],
-          const SizedBox(
-            height: 8,
+          formField(
+            title: 'Time',
+            controller: time,
+            isError: isErrorTime,
+            onTap: () async {
+              time.text = await getTime(context);
+            },
+          ),
+          formField(
+            title: 'Date',
+            controller: date,
+            isError: isErrorDate,
+            onTap: () async {
+              date.text = await getDate(context);
+            },
           ),
           if (widget.todo != null) ...[
             Container(
@@ -173,4 +247,38 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
       ),
     );
   }
+}
+
+Column formField({
+  required String title,
+  required TextEditingController controller,
+  required bool isError,
+  void Function()? onTap,
+}) {
+  return Column(
+    children: [
+      TextField(
+        controller: controller,
+        onTap: onTap ?? () {},
+        decoration: InputDecoration(
+          labelText: title,
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(),
+          ),
+        ),
+      ),
+      if (isError) ...[
+        const SizedBox(
+          height: 4,
+        ),
+        Text(
+          "$title Tidak Boleh Kosong",
+          style: TextStyle(color: Colors.red.shade700, fontSize: 14),
+        ),
+      ],
+      const SizedBox(
+        height: 8,
+      ),
+    ],
+  );
 }

@@ -6,6 +6,7 @@ class TodoModel {
   final bool isDone;
   final String title;
   final String descripsion;
+  final Timestamp dateTime;
 
   TodoModel({
     required this.id,
@@ -13,6 +14,7 @@ class TodoModel {
     required this.isDone,
     required this.title,
     required this.descripsion,
+    required this.dateTime,
   });
 
   Map<String, dynamic> toMap() {
@@ -21,6 +23,7 @@ class TodoModel {
       'userId': userId,
       'title': title,
       'descripsion': descripsion,
+      'dateTime': dateTime,
     };
   }
 
@@ -33,6 +36,7 @@ class TodoModel {
       title: data?["title"] ?? "-",
       descripsion: data?["descripsion"] ?? "-",
       userId: data?["userId"] ?? "-",
+      dateTime: data?["dateTime"],
     );
   }
 
@@ -42,6 +46,7 @@ class TodoModel {
     bool? isDone,
     String? title,
     String? descripsion,
+    Timestamp? dateTime,
   }) {
     return TodoModel(
       id: id ?? this.id,
@@ -49,6 +54,7 @@ class TodoModel {
       isDone: isDone ?? this.isDone,
       title: title ?? this.title,
       descripsion: descripsion ?? this.descripsion,
+      dateTime: dateTime ?? this.dateTime,
     );
   }
 }
