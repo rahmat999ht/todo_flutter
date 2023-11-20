@@ -33,14 +33,34 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
 
   String dateFormat = 'dd MMMM yyyy';
   String dateTanggalFormat = 'dd/MM/yyyy';
+  List<String> listMonth = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
 
   @override
   void initState() {
     isDone = widget.todo?.isDone ?? false;
     title.text = widget.todo?.title ?? "";
     descripsion.text = widget.todo?.descripsion ?? "";
-    // time.text = widget.todo?.dateTime.toDate().hour.toString() ?? "";
-    // date.text = widget.todo?.dateTime.toDate().day.toString() ?? "";
+    final getDate = widget.todo?.dateTime.toDate();
+    final jam = getDate?.hour.toString() ?? "";
+    final menit = getDate?.minute.toString() ?? "";
+    final day = getDate?.day.toString() ?? "";
+    final month = listMonth[getDate!.month - 1];
+    final year = getDate.year.toString();
+    time.text = '$jam : $menit';
+    date.text = '$day $month $year';
 
     super.initState();
   }
