@@ -17,7 +17,7 @@ class _DonePageState extends State<DonePage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: TodoFirestoreService.getsDone(user?.email ?? "-"),
+      stream: TodoFirestoreService.getsDone(user?.uid ?? "-"),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final todos = TodosModel.fromListQueryDocumentSnapshot(

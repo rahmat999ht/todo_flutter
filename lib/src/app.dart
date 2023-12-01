@@ -5,12 +5,14 @@ import 'widgets/root_nav_bar_page.dart';
 
 class App extends StatelessWidget {
   final bool isAuth;
-  const App({super.key, required this.isAuth});
+  final GlobalKey<NavigatorState> navigatorKey;
+  const App({super.key, required this.isAuth, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

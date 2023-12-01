@@ -18,7 +18,7 @@ class _TodoPageState extends State<TodoPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: TodoFirestoreService.getsTodo(user?.email ?? "-"),
+      stream: TodoFirestoreService.getsTodo(user?.uid ?? "-"),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final todos = TodosModel.fromListQueryDocumentSnapshot(

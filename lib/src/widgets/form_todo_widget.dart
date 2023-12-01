@@ -50,17 +50,19 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
 
   @override
   void initState() {
-    isDone = widget.todo?.isDone ?? false;
-    title.text = widget.todo?.title ?? "";
-    descripsion.text = widget.todo?.descripsion ?? "";
-    final getDate = widget.todo?.dateTime.toDate();
-    final jam = getDate?.hour.toString() ?? "";
-    final menit = getDate?.minute.toString() ?? "";
-    final day = getDate?.day.toString() ?? "";
-    final month = listMonth[getDate!.month - 1];
-    final year = getDate.year.toString();
-    time.text = '$jam : $menit';
-    date.text = '$day $month $year';
+    if (widget.todo != null) {
+      isDone = widget.todo?.isDone ?? false;
+      title.text = widget.todo?.title ?? "";
+      descripsion.text = widget.todo?.descripsion ?? "";
+      final getDate = widget.todo?.dateTime.toDate();
+      final jam = getDate?.hour.toString() ?? "";
+      final menit = getDate?.minute.toString() ?? "";
+      final day = getDate?.day.toString() ?? "";
+      final month = listMonth[getDate!.month - 1];
+      final year = getDate.year.toString();
+      time.text = '$jam : $menit';
+      date.text = '$day $month $year';
+    }
 
     super.initState();
   }
@@ -148,7 +150,7 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
     final user = FirebaseAuth.instance.currentUser;
     final data = TodoModel(
         id: widget.todo?.id ?? "_",
-        userId: user?.email ?? "-",
+        userId: user?.uid ?? "-",
         isDone: isDone,
         title: title.text,
         descripsion: descripsion.text,
@@ -186,84 +188,86 @@ class _FormTodoWidgetState extends State<FormTodoWidget> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          formField(
-            title: 'Title',
-            controller: title,
-            isError: isErrorTitle,
-          ),
-          formField(
-            title: 'Desc',
-            controller: descripsion,
-            isError: isErrorDescripsion,
-          ),
-          formField(
-            title: 'Time',
-            controller: time,
-            isError: isErrorTime,
-            onTap: () async {
-              time.text = await getTime(context);
-            },
-          ),
-          formField(
-            title: 'Date',
-            controller: date,
-            isError: isErrorDate,
-            onTap: () async {
-              date.text = await getDate(context);
-            },
-          ),
-          if (widget.todo != null) ...[
-            Container(
-              width: size.width,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black54),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  isDone = !isDone;
-                  setState(() {});
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Done"),
-                      Checkbox(
-                        value: isDone,
-                        onChanged: (value) {
-                          isDone = value ?? isDone;
-                          setState(() {});
-                        },
-                      ),
-                    ],
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            formField(
+              title: 'Title',
+              controller: title,
+              isError: isErrorTitle,
+            ),
+            formField(
+              title: 'Desc',
+              controller: descripsion,
+              isError: isErrorDescripsion,
+            ),
+            formField(
+              title: 'Time',
+              controller: time,
+              isError: isErrorTime,
+              onTap: () async {
+                time.text = await getTime(context);
+              },
+            ),
+            formField(
+              title: 'Date',
+              controller: date,
+              isError: isErrorDate,
+              onTap: () async {
+                date.text = await getDate(context);
+              },
+            ),
+            if (widget.todo != null) ...[
+              Container(
+                width: size.width,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black54),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    isDone = !isDone;
+                    setState(() {});
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Done"),
+                        Checkbox(
+                          value: isDone,
+                          onChanged: (value) {
+                            isDone = value ?? isDone;
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
+            ],
+            const SizedBox(
+              height: 40,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                fixedSize: Size(size.width, 40),
+                backgroundColor: Colors.deepPurple,
+              ),
+              onPressed: onSubmit,
+              child: Text(
+                widget.todo != null ? "Update" : "Create",
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
           ],
-          const SizedBox(
-            height: 40,
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              fixedSize: Size(size.width, 40),
-              backgroundColor: Colors.deepPurple,
-            ),
-            onPressed: onSubmit,
-            child: Text(
-              widget.todo != null ? "Update" : "Create",
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
